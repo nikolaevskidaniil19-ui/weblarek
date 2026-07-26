@@ -1,5 +1,7 @@
 # Проектная работа "Веб-ларек"
 
+ https://github.com/nikolaevskidaniil19-ui/weblarek
+
 Стек: HTML, SCSS, TS, Vite
 
 Структура проекта:

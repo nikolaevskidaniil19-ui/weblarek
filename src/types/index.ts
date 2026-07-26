@@ -2,12 +2,17 @@ export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
 
 export interface IApi {
     get<T extends object>(uri: string): Promise<T>;
-    post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
+    post<T extends object, D extends Record<string, unknown> = Record<string, unknown>>(
+        uri: string, 
+        data: D, 
+        method?: ApiPostMethods
+    ): Promise<T>;
 }
+
 export interface IProduct {
     id: string;
     title: string;
-    price: number | null;
+    price: number | null; 
     description: string;
     image: string;
     category: string;
@@ -26,7 +31,7 @@ export enum EPayment {
 export type TPayment = EPayment | null;
 
 export interface ICustomer {
-    payment: TPayment;
+    payment: EPayment; 
     address: string;
     email: string;
     phone: string;
@@ -52,5 +57,6 @@ export type TProductListResponse = {
     total: number;
     items: IProduct[];
 }
+
 
 export type TProductItemResponse = IProduct;

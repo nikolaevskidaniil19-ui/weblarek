@@ -1,10 +1,11 @@
-import { ICustomer, TCustomerErrors, TPayment } from "../../types";
+import { ICustomer, TCustomerErrors, EPayment } from "../../types";
 
 export class Customer {
-  private payment: TPayment;
-  private address: string;
-  private email: string;
-  private phone: string;
+  // Прописываем тип напрямую, используя импортированный EPayment
+  private payment: EPayment | null = null; 
+  private address: string = '';
+  private email: string = '';
+  private phone: string = '';
 
   constructor() {
     this.payment = null;
@@ -14,28 +15,31 @@ export class Customer {
   }
 
   set(data: Partial<ICustomer>): void {
-    Object.assign(this, data);
+    if (data.payment !== undefined) this.payment = data.payment;
+    if (data.address !== undefined) this.address = data.address;
+    if (data.email !== undefined) this.email = data.email;
+    if (data.phone !== undefined) this.phone = data.phone;
   }
 
-  get(): ICustomer {
+   get(): ICustomer {
     return {
-      payment: this.payment,
+      // Приводим тип к EPayment, чтобы TypeScript не ругался на null
+      payment: this.payment as EPayment, 
       address: this.address,
       email: this.email,
       phone: this.phone,
-    }
+    };
   }
 
   clear(): void {
-    this.payment = null
+    this.payment = null;
     this.address = '';
     this.email = '';
     this.phone = '';
   }
 
   validate(): TCustomerErrors {
-
-    const errors: TCustomerErrors = {}
+    const errors: TCustomerErrors = {};
 
     if (!this.payment) {
       errors.payment = 'Не выбран вид оплаты';
@@ -43,7 +47,6 @@ export class Customer {
     if (!this.address) {
       errors.address = 'Не введен адрес';
     }
-
     if (!this.email) {
       errors.email = 'Укажите корректный email';
     }
