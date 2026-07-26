@@ -37,7 +37,7 @@ const testCart = (cart: Cart, items: IProduct[]) => {
   console.log('количество товаров в корзине:', cart.getItemsCount());
   console.log('стоимость корзины:', cart.getTotal());
   console.log('товар в корзине:', cart.checkItem(productId));
-  cart.removeItem(product1);
+  cart.removeItem(product1.id);
   console.log('товары после removeItem:', cart.getItems());
   cart.clear();
   console.log('корзина после clear:', cart.getItems());
