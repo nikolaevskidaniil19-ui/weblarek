@@ -1,7 +1,6 @@
 import { ICustomer, TCustomerErrors, EPayment } from "../../types";
 
 export class Customer {
-  // Прописываем тип напрямую, используя импортированный EPayment
   private payment: EPayment | null = null; 
   private address: string = '';
   private email: string = '';
@@ -23,7 +22,6 @@ export class Customer {
 
    get(): ICustomer {
     return {
-      // Приводим тип к EPayment, чтобы TypeScript не ругался на null
       payment: this.payment as EPayment, 
       address: this.address,
       email: this.email,
