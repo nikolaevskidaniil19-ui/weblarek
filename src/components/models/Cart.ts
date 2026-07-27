@@ -27,13 +27,16 @@ export class Cart {
     this._storage = Object.create(null);
   }
 
-  getTotal(): number {
-    let totalAmount = 0;
-    Object.values(this._storage).forEach(product => {
-      totalAmount += product.price || 0;
-    });
-    return totalAmount;
+ getTotal(): number {
+  let totalAmount = 0;
+  const allProducts = Object.values(this._storage);
+
+  for (const product of allProducts) {
+    totalAmount += product.price || 0;
   }
+
+  return totalAmount;
+}
 
   getItemsCount(): number {
     return Object.keys(this._storage).length;
