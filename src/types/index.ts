@@ -1,62 +1,49 @@
 export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
-
 export interface IApi {
-    get<T extends object>(uri: string): Promise<T>;
-    post<T extends object, D extends Record<string, unknown> = Record<string, unknown>>(
-        uri: string, 
-        data: D, 
-        method?: ApiPostMethods
-    ): Promise<T>;
+  get<T extends object>(uri: string): Promise<T>;
+  post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
 }
-
 export interface IProduct {
-    id: string;
-    title: string;
-    price: number | null; 
-    description: string;
-    image: string;
-    category: string;
+  price: number | null;
+  id: string;
+  category: string;
+  title: string;
+  image: string;
+  description: string;
 }
-
-export enum EValidationStep {
-    shipping = 0,
-    contacts = 1,
-}
-
-export enum EPayment {
-    online = 'online',
-    onReceipt = 'onReceipt',
-}
-
+export const EValidationStep = {
+  shipping: 0,
+  contacts: 1,
+} as const;
+export type EValidationStep = typeof EValidationStep[keyof typeof EValidationStep];
+export const EPayment = {
+  online: 'online',
+  onReceipt: 'onReceipt',
+} as const;
+export type EPayment = typeof EPayment[keyof typeof EPayment];
 export type TPayment = EPayment | null;
-
 export interface ICustomer {
-    payment: EPayment; 
-    address: string;
-    email: string;
-    phone: string;
+  payment: EPayment;
+  address: string;
+  email: string;
+  phone: string;
 }
-
-export type TCustomerErrors = Partial<Record<keyof ICustomer, string>>;
-
-export type TOrder = ICustomer & {
-    items: Array<IProduct['id']>;
-    total: number;
+export type TCustomerErrors = {
+  [K in keyof ICustomer]?: string;
+};
+export interface TOrder extends ICustomer {
+  items: string[];
+  total: number;
 }
-
 export type TOrderResponse = {
-    id: string;
-    total: number;
-} 
-
+  id: string;
+  total: number;
+};
 export type TResponseError = {
-    error: string;
-}
-
+  error: string;
+};
 export type TProductListResponse = {
-    total: number;
-    items: IProduct[];
-}
-
-
+  items: IProduct[];
+  total: number;
+};
 export type TProductItemResponse = IProduct;
