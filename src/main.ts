@@ -3,97 +3,101 @@ import { Api } from './components/base/Api';
 import { Cart } from './components/models/Cart';
 import { Catalog } from './components/models/Catalog';
 import { Customer } from './components/models/Customer';
+// @ts-ignore
 import './scss/styles.scss';
 import { EPayment, IProduct } from './types';
 import { API_URL } from './utils/constants';
 import { apiProducts } from './utils/data';
 
-const testCatalog = (catalog: Catalog, items: IProduct[]) => {
-  const product = items[0];
-  const productId = product.id;
+
+function runCatalogTests(catalogInstance: Catalog, products: IProduct[]) {
+  const targetProduct = products[0];
   
-  catalog.setItems(items)
-  console.log('--- Catalog ---');
-  console.log('товары в каталоге:', catalog.getItems());
-  console.log('количество товаров в каталоге:', catalog.getTotal());
-  console.log('товар по id:', catalog.getItemById(productId));
-  console.log('выбранный товар:', catalog.getSelectedItem());
+  catalogInstance.setItems(products);
+  console.log('=== [Каталог] ===');
+  console.log('Список товаров:', catalogInstance.getItems());
+  console.log('Всего позиций:', catalogInstance.getTotal());
+  console.log('Поиск по идентификатору:', catalogInstance.getItemById(targetProduct.id));
+  console.log('Текущий выбор:', catalogInstance.getSelectedItem());
 
-  catalog.setSelectedItem(product);
-  console.log('выбранный товар после setSelectedItem:', catalog.getSelectedItem());
+  catalogInstance.setSelectedItem(targetProduct);
+  console.log('Выбор после обновления:', catalogInstance.getSelectedItem());
 }
 
-const testCart = (cart: Cart, items: IProduct[]) => {
-  const product1 = items[0];
-  const product2 = items[1];
-  const productId = product1.id;
+function runCartTests(cartInstance: Cart, products: IProduct[]) {
+  const firstProd = products[0];
+  const secondProd = products[1]; 
   
-  console.log('--- Cart ---');
-  console.log('товары в корзине (пустая):', cart.getItems());
-  cart.addItem(product1);
-  cart.addItem(product2);
-  cart.addItem(product1);
-  console.log('товары в корзине:', cart.getItems());
-  console.log('количество товаров в корзине:', cart.getItemsCount());
-  console.log('стоимость корзины:', cart.getTotal());
-  console.log('товар в корзине:', cart.checkItem(productId));
-  cart.removeItem(product1.id);
-  console.log('товары после removeItem:', cart.getItems());
-  cart.clear();
-  console.log('корзина после clear:', cart.getItems());
+  console.log('=== [Корзина] ===');
+  console.log('Начальное состояние:', cartInstance.getItems());
+  
+  cartInstance.addItem(firstProd);
+  cartInstance.addItem(secondProd);
+  cartInstance.addItem(firstProd);
+  
+  console.log('Содержимое корзины:', cartInstance.getItems());
+  console.log('Общее кол-во:', cartInstance.getItemsCount());
+  console.log('Итоговая сумма:', cartInstance.getTotal());
+  console.log('Присутствие первого товара:', cartInstance.checkItem(firstProd.id));
+  
+  cartInstance.removeItem(firstProd.id);
+  console.log('После удаления первого элемента:', cartInstance.getItems());
+  
+  cartInstance.clear();
+  console.log('После полной очистки:', cartInstance.getItems());
 }
 
-const testCustomer = (customer: Customer) => {
-  console.log('--- Customer ---');
-  console.log('данные покупателя:', customer.get());
-  console.log('валидация (пустые данные):', customer.validate());
+function runCustomerTests(customerInstance: Customer) {
+  console.log('=== [Покупатель] ===');
+  console.log('Профиль по умолчанию:', customerInstance.get());
+  console.log('Ошибки пустой формы:', customerInstance.validate());
 
-  customer.set({ address: 'Москва, ул. Примерная, 1' });
-  console.log('данные после set (только address):', customer.get());
-  console.log('валидация (только address):', customer.validate());
+  customerInstance.set({ address: 'Москва, ул. Примерная, 1' });
+  console.log('После добавления адреса:', customerInstance.get());
+  console.log('Ошибки формы (только адрес):', customerInstance.validate());
 
-  customer.set({ payment: EPayment.online });
-  console.log('данные после set (address и payment):', customer.get());
-  console.log('валидация (без контактов):', customer.validate());
+  customerInstance.set({ payment: EPayment.online });
+  console.log('После выбора оплаты:', customerInstance.get());
+  console.log('Ошибки формы (без контактов):', customerInstance.validate());
 
-  customer.set({ email: 'test@mail.ru', phone: '+79991234567' });
-  console.log('данные покупателя (полные):', customer.get());
-  console.log('валидация (полные данные):', customer.validate());
+  customerInstance.set({ email: 'test@mail.ru', phone: '+79991234567' });
+  console.log('Заполненный профиль:', customerInstance.get());
+  console.log('Результат финальной валидации:', customerInstance.validate());
 
-  customer.clear();
-  console.log('данные после clear:', customer.get());
+  customerInstance.clear();
+  console.log('После сброса данных:', customerInstance.get());
 }
 
-const testMock = () => {
-  console.log('--- Test Mock ---');
+function executeLocalMock() {
+  console.log('>>> СТАРТ ЛОКАЛЬНЫХ ТЕСТОВ <<<');
 
   const catalog = new Catalog();
-  testCatalog(catalog, apiProducts.items);
+  runCatalogTests(catalog, apiProducts.items);
 
   const cart = new Cart();
-  testCart(cart, apiProducts.items);
+  runCartTests(cart, apiProducts.items);
 
   const customer = new Customer();
-  testCustomer(customer);
+  runCustomerTests(customer);
 }
 
-const main = async () => {
-  console.log('--- Test Api ---');
+async function appInitialization() {
+  console.log('>>> СТАРТ ИНИЦИАЛИЗАЦИИ API <<<');
 
-  const api = new Api(API_URL);
-  const webLarekApi = new WebLarekApi(api);
-  const cart = new Cart();
-  const catalog = new Catalog();
+  const coreApi = new Api(API_URL);
+  const serverAdapter = new WebLarekApi(coreApi);
+  
+  const shoppingCart = new Cart();
+  const storeCatalog = new Catalog();
 
   try {
-    const { items } = await webLarekApi.getProductList();
+    const responseData = await serverAdapter.getProductList();
 
-    testCatalog(catalog, items);
-    testCart(cart, catalog.getItems());
-  } catch (error) {
-    console.error('Ошибка сервера:', error);
+    runCatalogTests(storeCatalog, responseData.items);
+    runCartTests(shoppingCart, storeCatalog.getItems());
+  } catch (err) {
+    console.error('Критическая ошибка при связи с сервером:', err);
   }
-};
-
-testMock();
-main();
+}
+executeLocalMock();
+appInitialization();

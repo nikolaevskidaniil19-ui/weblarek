@@ -1,14 +1,13 @@
-import { IApi,  TProductListResponse } from "../types";
-
+import { IApi, TProductListResponse } from "../types";
 
 export class WebLarekApi {
-  private api: IApi;
+  protected readonly _networkClient: IApi;
 
   constructor(api: IApi) {
-    this.api = api;
+    this._networkClient = api;
   }
-  
-  getProductList(): Promise<TProductListResponse> {
-    return this.api.get<TProductListResponse>('/product')
+  async getProductList(): Promise<TProductListResponse> {
+    const response = await this._networkClient.get<TProductListResponse>('/product');
+    return response;
   }
 }
