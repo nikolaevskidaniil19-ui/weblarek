@@ -5,7 +5,6 @@ import { Catalog } from './components/models/Catalog';
 import { Customer } from './components/models/Customer';
 import './scss/styles.scss'; 
 import { EPayment, IProduct } from './types';
-import { API_URL } from './utils/constants';
 import { apiProducts } from './utils/data';
 
 function runCatalogTests(catalogInstance: Catalog, products: IProduct[]) {
@@ -86,7 +85,8 @@ function executeLocalMock() {
 async function appInitialization() {
   console.log('>>> СТАРТ ИНИЦИАЛИЗАЦИИ API <<<');
 
-  const coreApi = new Api(API_URL);
+  
+  const coreApi = new Api('https://nomoreparties.co'); 
   const serverAdapter = new WebLarekApi(coreApi);
   
   const shoppingCart = new Cart();
