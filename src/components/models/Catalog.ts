@@ -21,11 +21,6 @@ export class Catalog {
     return null;
   }
 
-  setSelectedItemById(id: IProduct['id']): void {
-    const found = this.getItemById(id);
-    this._currentActiveItem = found;
-  }
-
   setItems(items: IProduct[]): void {
     this._goodsList = items;
   }

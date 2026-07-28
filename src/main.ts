@@ -3,12 +3,10 @@ import { Api } from './components/base/Api';
 import { Cart } from './components/models/Cart';
 import { Catalog } from './components/models/Catalog';
 import { Customer } from './components/models/Customer';
-// @ts-ignore
-import './scss/styles.scss';
+import './scss/styles.scss'; 
 import { EPayment, IProduct } from './types';
 import { API_URL } from './utils/constants';
 import { apiProducts } from './utils/data';
-
 
 function runCatalogTests(catalogInstance: Catalog, products: IProduct[]) {
   const targetProduct = products[0];
@@ -17,10 +15,14 @@ function runCatalogTests(catalogInstance: Catalog, products: IProduct[]) {
   console.log('=== [Каталог] ===');
   console.log('Список товаров:', catalogInstance.getItems());
   console.log('Всего позиций:', catalogInstance.getTotal());
-  console.log('Поиск по идентификатору:', catalogInstance.getItemById(targetProduct.id));
+  
+  // Ищем элемент по ID
+  const foundProduct = catalogInstance.getItemById(targetProduct.id);
+  console.log('Поиск по идентификатору:', foundProduct);
   console.log('Текущий выбор:', catalogInstance.getSelectedItem());
 
-  catalogInstance.setSelectedItem(targetProduct);
+  // Передаем найденный объект в метод выбора
+  catalogInstance.setSelectedItem(foundProduct);
   console.log('Выбор после обновления:', catalogInstance.getSelectedItem());
 }
 
@@ -99,5 +101,6 @@ async function appInitialization() {
     console.error('Критическая ошибка при связи с сервером:', err);
   }
 }
+
 executeLocalMock();
 appInitialization();

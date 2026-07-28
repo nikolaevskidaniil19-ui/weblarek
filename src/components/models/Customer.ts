@@ -1,14 +1,12 @@
-import { ICustomer, TCustomerErrors, EPayment } from "../../types";
+import { ICustomer, TCustomerErrors } from "../../types";
 
 export class Customer {
   private _profile: ICustomer = {
-    payment: null as unknown as EPayment,
+    payment: null, 
     address: '',
     email: '',
     phone: '',
   };
-
-  
 
   set(data: Partial<ICustomer>): void {
     this._profile = Object.assign({}, this._profile, data);
@@ -20,7 +18,7 @@ export class Customer {
 
   clear(): void {
     this._profile = {
-      payment: null as unknown as EPayment,
+      payment: null, 
       address: '',
       email: '',
       phone: '',
