@@ -1,49 +1,59 @@
-export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
+export type HttpPostMethod = 'POST' | 'PUT' | 'DELETE';
 
-export interface IApi {
-  get<T extends object>(uri: string): Promise<T>;
-  post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
+export type TPayment = 'card' | 'cash';
+
+export interface INetworkProvider {
+  get<R extends object>(path: string): Promise<R>;
+  post<R extends object>(path: string, payload: object, verb?: HttpPostMethod): Promise<R>;
 }
 
 export interface IProduct {
-  price: number | null;
-  id: string;
-  category: string;
-  title: string;
-  image: string;
-  description: string;
+  id: string; 
+  title: string; 
+  image: string; 
+  category: string; 
+  price: number | null; 
+  description: string; 
 }
 
-export const EPayment = {
-  online: 'online',
-  onReceipt: 'onReceipt',
-} as const;
-
-export type EPayment = typeof EPayment[keyof typeof EPayment];
-export type TPayment = EPayment | null;
 
 export interface ICustomer {
-  payment: TPayment | null; 
-  address: string;
-  email: string;
-  phone: string;
+  payment: TPayment | "" | null; 
+  address: string; 
+  email: string; 
+  phone: string; 
 }
 
 export type TCustomerErrors = {
   [K in keyof ICustomer]?: string;
 };
 
+
 export interface TOrder extends ICustomer {
   items: string[];
   total: number;
 }
 
-export type TOrderResponse = {
+export type TServerCatalogPayload = {
+  total: number;
+  items: IProduct[];
+};
+
+export type TServerOrderReceipt = {
   id: string;
   total: number;
 };
 
-export type TProductListResponse = {
-  items: IProduct[];
-  total: number;
-};
+export interface IBaseLayoutFields {
+  title: string;
+  price: number | null;
+}
+
+export interface IInteractionHandlers {
+  onClick: (evt: MouseEvent) => void;
+}
+
+export interface IViewStateConstraints {
+  errors: string;
+  valid: boolean;
+}

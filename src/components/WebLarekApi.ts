@@ -1,17 +1,17 @@
-import { IApi, TProductListResponse, TOrder, TOrderResponse } from "../types";
+import { INetworkProvider, TServerCatalogPayload, TOrder, TServerOrderReceipt } from "../types/index";
 
 export class WebLarekApi {
-  protected readonly _networkClient: IApi;
+  protected readonly restGateway: INetworkProvider;
 
-  constructor(api: IApi) {
-    this._networkClient = api;
+  constructor(coreNetworkClient: INetworkProvider) {
+    this.restGateway = coreNetworkClient;
   }
 
-  getProductList(): Promise<TProductListResponse> {
-    return this._networkClient.get<TProductListResponse>('/product');
+  public downloadCatalog(): Promise<TServerCatalogPayload> {
+    return this.restGateway.get<TServerCatalogPayload>('/product');
   }
 
-  postOrder(order: TOrder): Promise<TOrderResponse> {
-    return this._networkClient.post<TOrderResponse>('/order', order);
+  public sendOrderTicket(payload: TOrder): Promise<TServerOrderReceipt> {
+    return this.restGateway.post<TServerOrderReceipt>('/order', payload);
   }
 }

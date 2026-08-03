@@ -1,4 +1,5 @@
 import { ICustomer, TCustomerErrors } from "../../types";
+import { IEvents } from "../base/Events";
 
 export class Customer {
   private _profile: ICustomer = {
@@ -7,9 +8,15 @@ export class Customer {
     email: '',
     phone: '',
   };
+  protected events: IEvents;
+
+  constructor(events: IEvents) {
+    this.events = events;
+  }
 
   set(data: Partial<ICustomer>): void {
     this._profile = Object.assign({}, this._profile, data);
+    this.events.emit("buyer:changed");
   }
 
   get(): ICustomer {
@@ -23,6 +30,7 @@ export class Customer {
       email: '',
       phone: '',
     };
+    this.events.emit("buyer:changed");
   }
 
   validate(): TCustomerErrors {
