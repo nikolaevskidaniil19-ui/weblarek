@@ -29,7 +29,7 @@ export abstract class BaseCatalogItem<T> extends Component<T & IBaseItemFields> 
 
   set price(amount: number | null) {
     if (amount === null || amount === undefined) {
-      this.costNode.textContent = "Цена не указана";
+      this.costNode.textContent = "Бесценно";
     } else {
       this.costNode.textContent = `${amount} синапсов`;
     }

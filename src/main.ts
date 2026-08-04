@@ -56,15 +56,7 @@ const detailedCardPreview = new DetailedItemView(
   duplicateTemplateElement("#card-preview"),
   {
     onClick: () => {
-      const activeUnit = productModel.getSelectedItem();
-      if (!activeUnit) return;
-
-      if (shoppingModel.checkItem(activeUnit.id)) {
-        shoppingModel.removeItem(activeUnit.id);
-      } else {
-        shoppingModel.addItem(activeUnit);
-      }
-      appModalPopup.dismiss();
+      globalEventsBus.emit("preview:submit");
     },
   }
 );
@@ -106,6 +98,19 @@ globalEventsBus.on("product:selected", () => {
 
   appModalPopup.display();
 });
+
+globalEventsBus.on("preview:submit", () => {
+  const activeUnit = productModel.getSelectedItem();
+  if (!activeUnit) return;
+
+  if (shoppingModel.checkItem(activeUnit.id)) {
+    shoppingModel.removeItem(activeUnit.id);
+  } else {
+    shoppingModel.addItem(activeUnit);
+  }
+  appModalPopup.dismiss();
+});
+
 globalEventsBus.on("basket:changed", () => {
   const currentBasketItems = shoppingModel.getItems();
 

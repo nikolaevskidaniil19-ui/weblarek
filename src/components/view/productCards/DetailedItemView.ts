@@ -1,5 +1,15 @@
 import { BaseCatalogItem } from "./BaseCatalogItem";
-import { IMAGE_CDN_PATH } from "../../../utils/constants";
+import { IMAGE_CDN_PATH, UI_CATEGORY_STYLE_REGISTRY } from "../../../utils/constants";
+function applyCategoryStyle(element: HTMLElement, categoryName: string): void {
+  if (!element) return;
+  Object.values(UI_CATEGORY_STYLE_REGISTRY).forEach(cls => element.classList.remove(cls));
+  
+  const targetClass = UI_CATEGORY_STYLE_REGISTRY[categoryName];
+  if (targetClass) {
+    element.classList.add(targetClass);
+  }
+  element.textContent = categoryName;
+}
 
 interface IDetailedViewProps {
   category: string;
@@ -42,9 +52,7 @@ export class DetailedItemView extends BaseCatalogItem<IDetailedViewProps> {
   }
 
   set category(name: string) {
-    if (this.categoryTagNode) {
-      this.categoryTagNode.textContent = name;
-    }
+    applyCategoryStyle(this.categoryTagNode, name);
   }
 
   set image(sourceUrl: string) {
